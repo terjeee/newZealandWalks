@@ -3,11 +3,11 @@ using newZealandWalks.API.Models.Domain;
 
 namespace newZealandWalks.API.Data
 {
-    public class newZealandWalksDbContext: DbContext
+    public class newZealandWalksDbContext : DbContext
     {
-        public newZealandWalksContext(DbContextOptions dbContextOptions): base(DbContextOptions)
+        public newZealandWalksDbContext(DbContextOptions<newZealandWalksDbContext> options) : base(options)
         {
-
+            // Constructor body
         }
 
         public DbSet<Difficulty> Difficulties { get; set; }
