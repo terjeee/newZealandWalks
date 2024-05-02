@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using newZealandWalks.API.Data;
 using newZealandWalks.API.Models.Domain;
+using newZealandWalks.API.Models.DTO;
 
 namespace newZealandWalks.API.Controllers
 {
@@ -23,9 +24,24 @@ namespace newZealandWalks.API.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var regions = dbContext.Regions.ToList();
+            // get data from database - domain model
+            var regionsDM = dbContext.Regions.ToList();
 
-            return Ok(regions);
+            // map/convert DOMAIN MODEL to DTO
+            var regionsDTO = new List<RegionDTO>();
+            foreach (var regionDM in regionsDM)
+            {
+                regionsDTO.Add(new RegionDTO()
+                {
+                    Id = regionDM.Id,
+                    Code = regionDM.Code,
+                    Name = regionDM.Name,
+                    RegionImageUrl = regionDM.RegionImageUrl,
+                });
+            };
+
+            // return DTO
+            return Ok(regionsDTO);
         }
 
         // GET region/(id)
@@ -35,14 +51,23 @@ namespace newZealandWalks.API.Controllers
         public IActionResult GetById([FromRoute] Guid id)
         {
             // var region = dbContext.Regions.Find(id); // .Find(id) kan bare brukes med id
-            var region = dbContext.Regions.FirstOrDefault(regionItem => regionItem.Id == id); // funker fordi vi passer id inn med [Route("{id:Guid}")]
+            var regionDM = dbContext.Regions.FirstOrDefault(regionItem => regionItem.Id == id); // funker fordi vi passer id inn med [Route("{id:Guid}")]
 
-            if (region == null)
+            if (regionDM == null)
             {
                 return NotFound();
             }
 
-            return Ok(region);
+            // map/convert DM -> DTO
+            var regionDTO = new RegionDTO
+            {
+                Id = regionDM.Id,
+                Code = regionDM.Code,
+                Name = regionDM.Name,
+                RegionImageUrl = regionDM.RegionImageUrl,
+            };
+
+            return Ok(regionDTO);
         } 
     }
 }
