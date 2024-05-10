@@ -137,5 +137,19 @@ namespace newZealandWalks.API.Controllers
 
             return Ok(regionDTO);
         }
+
+        [HttpDelete]
+        [Route("{id:Guid}")]
+        public IActionResult Delete([FromRoute] Guid id)
+        {
+            var region = dbContext.Regions.FirstOrDefault(region => region.Id == id);
+
+            if (region == null ) { return NotFound(); }
+
+            dbContext.Regions.Remove(region);
+            dbContext.SaveChanges();
+
+            return Ok();
+        }
     }
 }
