@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using newZealandWalks.API.Data;
 using newZealandWalks.API.Models.Domain;
 using newZealandWalks.API.Models.DTO;
+using newZealandWalks.API.Repositories;
 using System.Security.Cryptography.X509Certificates;
 
 namespace newZealandWalks.API.Controllers
@@ -15,10 +16,12 @@ namespace newZealandWalks.API.Controllers
     public class RegionsController : ControllerBase
     {
         private readonly newZealandWalksDbContext dbContext;
+        private readonly IRegionRepository regionRepository;
 
-        public RegionsController(newZealandWalksDbContext dbContext)
+        public RegionsController(newZealandWalksDbContext dbContext, IRegionRepository regionRepository)
         {
             this.dbContext = dbContext;
+            this.regionRepository = regionRepository;
         }
 
         // GET ALL REGIONS
@@ -27,7 +30,8 @@ namespace newZealandWalks.API.Controllers
         public async Task<IActionResult> GetAll()
         {
             // get data from database - domain model
-            var regionsDM = await dbContext.Regions.ToListAsync();
+            // var regionsDM = await dbContext.Regions.ToListAsync();
+            var regionsDM = await regionRepository.AsyncGetAll();
 
             // map/convert DOMAIN MODEL to DTO
             var regionsDTO = new List<RegionDTO>();
