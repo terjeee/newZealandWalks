@@ -13,6 +13,7 @@ builder.Services.AddSwaggerGen();
 // egen DI
 builder.Services.AddDbContext<newZealandWalksDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("newZealandWalksConnectionString")));
 builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
+builder.Services.AddScoped<IWalkRepository, SQLWalkRepository>();
 // builder.Services.AddScoped<IRegionRepository, InMemoryRegionRepository>(); // bytte DB
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
