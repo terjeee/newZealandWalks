@@ -58,5 +58,29 @@ namespace newZealandWalks.API.Controllers
 
             return Ok(walkDTO);
         }
+
+        [HttpPut]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> WalkUpdateAsync([FromRoute] Guid id, [FromBody] WalkUpdateDTO walkUpdateDTO)
+        {
+            var walkDM = mapper.Map<Walk>(walkUpdateDTO);
+
+            walkDM = await walkRepository.WalkUpdateAsync(id, walkDM);
+
+            if (walkDM == null) { return NotFound(); }
+
+            return Ok(mapper.Map<WalkDTO>(walkDM));
+        }
+
+        [HttpDelete]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> WalkDeleteAsync([FromRoute] Guid id)
+        {
+            var deletedWalkDM = await walkRepository.WalkDeleteAsync(id);
+
+            if (deletedWalkDM == null) { return NotFound(); }
+
+            return Ok(mapper.Map<WalkDTO>(deletedWalkDM));
+        }
     }
 }
