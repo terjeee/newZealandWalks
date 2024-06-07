@@ -1,7 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
+using newZealandWalks.API.CustomActionFilters;
 using newZealandWalks.API.Models.Domain;
 using newZealandWalks.API.Models.DTO;
 using newZealandWalks.API.Repositories;
@@ -24,6 +23,7 @@ namespace newZealandWalks.API.Controllers
         // create Walk
         // POST /api/walks
         [HttpPost]
+        [ValidateModel]
         public async Task<IActionResult> WalkCreateAsync([FromBody] WalkAddDTO walkAddDTO)
         {
             // map DTO to DM
@@ -34,6 +34,7 @@ namespace newZealandWalks.API.Controllers
 
             // map DM to 
             return Ok(mapper.Map<WalkDTO>(walkDM));
+
         }
 
         [HttpGet]
@@ -61,15 +62,24 @@ namespace newZealandWalks.API.Controllers
 
         [HttpPut]
         [Route("{id:Guid}")]
+        [ValidateModel]
         public async Task<IActionResult> WalkUpdateAsync([FromRoute] Guid id, [FromBody] WalkUpdateDTO walkUpdateDTO)
         {
-            var walkDM = mapper.Map<Walk>(walkUpdateDTO);
+            if (ModelState.IsValid)
+            {
 
-            walkDM = await walkRepository.WalkUpdateAsync(id, walkDM);
+                var walkDM = mapper.Map<Walk>(walkUpdateDTO);
 
-            if (walkDM == null) { return NotFound(); }
+                walkDM = await walkRepository.WalkUpdateAsync(id, walkDM);
 
-            return Ok(mapper.Map<WalkDTO>(walkDM));
+                if (walkDM == null) { return NotFound(); }
+
+                return Ok(mapper.Map<WalkDTO>(walkDM));
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
         }
 
         [HttpDelete]
