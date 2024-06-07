@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using newZealandWalks.API.Data;
 using newZealandWalks.API.Models.Domain;
 using newZealandWalks.API.Models.DTO;
 using newZealandWalks.API.Repositories;
-using System.Security.Cryptography.X509Certificates;
 
 namespace newZealandWalks.API.Controllers
 {
@@ -86,37 +83,45 @@ namespace newZealandWalks.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] RegionAddRequestDTO addRegionRequestDTO)
         {
-            // map/convert DTO to DM
-            //var regionDM = new Region
-            //{
-            //    Code = addRegionRequestDTO.Code,
-            //    Name = addRegionRequestDTO.Name,
-            //    RegionImageUrl = addRegionRequestDTO.RegionImageUrl,
-            //};
+            if (ModelState.IsValid)
+            {
 
-            var regionDM = mapper.Map<Region>(addRegionRequestDTO);
+                // map/convert DTO to DM
+                //var regionDM = new Region
+                //{
+                //    Code = addRegionRequestDTO.Code,
+                //    Name = addRegionRequestDTO.Name,
+                //    RegionImageUrl = addRegionRequestDTO.RegionImageUrl,
+                //};
 
-            // use DM to create Region in DM
-            // await dbContext.Regions.AddAsync(regionDM);
-            // await dbContext.SaveChangesAsync();
-            regionDM = await regionRepository.AsyncCreate(regionDM);
+                var regionDM = mapper.Map<Region>(addRegionRequestDTO);
 
-            // map DM back to DTO (safety concerns)
-            //var regionDTO = new RegionDTO
-            //{
-            //    Id = regionDM.Id,
-            //    Code = regionDM.Code,
-            //    Name = regionDM.Name,
-            //    RegionImageUrl = regionDM.RegionImageUrl
-            //};
+                // use DM to create Region in DM
+                // await dbContext.Regions.AddAsync(regionDM);
+                // await dbContext.SaveChangesAsync();
+                regionDM = await regionRepository.AsyncCreate(regionDM);
 
-            var regionDTO = mapper.Map<RegionDTO>(regionDM);
+                // map DM back to DTO (safety concerns)
+                //var regionDTO = new RegionDTO
+                //{
+                //    Id = regionDM.Id,
+                //    Code = regionDM.Code,
+                //    Name = regionDM.Name,
+                //    RegionImageUrl = regionDM.RegionImageUrl
+                //};
 
-            // CreatedAtAction = HTTP 201 (created)
-            // nameo() = action
-            // new {} = route values (parameters)
-            // regionDTO = object created, returned as response
-            return CreatedAtAction(nameof(GetById), new { id = regionDTO.Id }, regionDTO);
+                var regionDTO = mapper.Map<RegionDTO>(regionDM);
+
+                // CreatedAtAction = HTTP 201 (created)
+                // nameo() = action
+                // new {} = route values (parameters)
+                // regionDTO = object created, returned as response
+                return CreatedAtAction(nameof(GetById), new { id = regionDTO.Id }, regionDTO);
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
         }
 
         // update region
@@ -125,44 +130,51 @@ namespace newZealandWalks.API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionDTO updateRegionDTO)
         {
-            // Map DTO to DM
-            //var regionDM = new Region
-            //{
-            //    Code = updateRegionDTO.Code,
-            //    Name = updateRegionDTO.Name,
-            //    RegionImageUrl = updateRegionDTO.RegionImageUrl
-            //};
+            if (ModelState.IsValid)
+            {
+                // Map DTO to DM
+                //var regionDM = new Region
+                //{
+                //    Code = updateRegionDTO.Code,
+                //    Name = updateRegionDTO.Name,
+                //    RegionImageUrl = updateRegionDTO.RegionImageUrl
+                //};
 
-            var regionDM = mapper.Map<Region>(updateRegionDTO);
+                var regionDM = mapper.Map<Region>(updateRegionDTO);
 
-            // check if region exists
-            // var regionDM = await dbContext.Regions.FirstOrDefaultAsync(region => region.Id == id);
-            regionDM = await regionRepository.AsyncUpdate(id, regionDM);
+                // check if region exists
+                // var regionDM = await dbContext.Regions.FirstOrDefaultAsync(region => region.Id == id);
+                regionDM = await regionRepository.AsyncUpdate(id, regionDM);
 
-            if (regionDM == null) { return NotFound(); }
+                if (regionDM == null) { return NotFound(); }
 
-            // map DTO to DMN
-            // regionDM.Code = updateRegionDTO.Code ?? regionDM.Code;
-            // regionDM.Name = updateRegionDTO.Name ?? regionDM.Name;
-            // regionDM.RegionImageUrl = updateRegionDTO.RegionImageUrl ?? regionDM.RegionImageUrl;
+                // map DTO to DMN
+                // regionDM.Code = updateRegionDTO.Code ?? regionDM.Code;
+                // regionDM.Name = updateRegionDTO.Name ?? regionDM.Name;
+                // regionDM.RegionImageUrl = updateRegionDTO.RegionImageUrl ?? regionDM.RegionImageUrl;
 
 
-            // save changes to DB
-            // regiomDM is a DM tracked from the database, the changes above in the mapping just needs to be saved
-            // await dbContext.SaveChangesAsync();
+                // save changes to DB
+                // regiomDM is a DM tracked from the database, the changes above in the mapping just needs to be saved
+                // await dbContext.SaveChangesAsync();
 
-            // convert DM to DTO for the response
-            //var regionDTO = new RegionDTO
-            //{
-            //    Id = regionDM.Id,
-            //    Code = regionDM.Code,
-            //    Name = regionDM.Name,
-            //    RegionImageUrl = regionDM.RegionImageUrl
-            //};
+                // convert DM to DTO for the response
+                //var regionDTO = new RegionDTO
+                //{
+                //    Id = regionDM.Id,
+                //    Code = regionDM.Code,
+                //    Name = regionDM.Name,
+                //    RegionImageUrl = regionDM.RegionImageUrl
+                //};
 
-            var regionDTO = mapper.Map<RegionDTO>(regionDM);
+                var regionDTO = mapper.Map<RegionDTO>(regionDM);
 
-            return Ok(regionDTO);
+                return Ok(regionDTO);
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
         }
 
         [HttpDelete]

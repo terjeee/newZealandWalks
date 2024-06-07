@@ -35,7 +35,7 @@ namespace newZealandWalks.API.Repositories
         {
             var existingRegion = await dbContext.Regions.FirstOrDefaultAsync(region => region.Id == id);
 
-            if (existingRegion == null ) { return null; }
+            if (existingRegion == null) { return null; }
 
             existingRegion.Code = regionDM.Code ?? existingRegion.Code;
             existingRegion.Name = regionDM.Name ?? existingRegion.Name;

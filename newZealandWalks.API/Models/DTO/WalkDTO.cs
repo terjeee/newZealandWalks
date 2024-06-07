@@ -1,6 +1,4 @@
-﻿using newZealandWalks.API.Models.Domain;
-
-namespace newZealandWalks.API.Models.DTO
+﻿namespace newZealandWalks.API.Models.DTO
 {
     public class WalkDTO
     {

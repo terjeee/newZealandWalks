@@ -7,7 +7,7 @@ namespace newZealandWalks.API.Repositories
         Task<List<Region>> AsyncGetAll();
 
         Task<Region?> AsyncGetById(Guid id);
-        
+
         Task<Region> AsyncCreate(Region regionDM);
 
         Task<Region?> AsyncUpdate(Guid id, Region regionDM);
